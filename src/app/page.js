@@ -1,95 +1,104 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const initialBudget = 100;
+  const [balance, setBalance] = useState(initialBudget);
+  const [transactions, setTransactions] = useState([]);
+  const [merchant, setMerchant] = useState("");
+  const [amount, setAmount] = useState("");
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  useEffect(() => {
+    const savedData = localStorage.getItem("expenseTrackerData");
+    if (savedData) {
+      const { savedBalance, savedTransactions, savedDate } =
+        JSON.parse(savedData);
+      const currentDate = new Date().toDateString();
+      if (savedDate === currentDate) {
+        setBalance(savedBalance);
+        setTransactions(savedTransactions);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const currentDate = new Date().toDateString();
+    localStorage.setItem(
+      "expenseTrackerData",
+      JSON.stringify({
+        savedBalance: balance,
+        savedTransactions: transactions,
+        savedDate: currentDate,
+      })
+    );
+  }, [balance, transactions]);
+
+  const handleAddTransaction = () => {
+    if (!merchant || !amount || isNaN(amount) || amount <= 0) return;
+    const newTransaction = { merchant, amount: parseFloat(amount) };
+    setTransactions([...transactions, newTransaction]);
+    setBalance(balance - newTransaction.amount);
+    setMerchant("");
+    setAmount("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleAddTransaction();
+  };
+
+  const handleDeleteTransaction = (index) => {
+    const updatedTransactions = transactions.filter((_, i) => i !== index);
+    const updatedBalance = updatedTransactions.reduce(
+      (acc, t) => acc - t.amount,
+      initialBudget
+    );
+    setTransactions(updatedTransactions);
+    setBalance(updatedBalance);
+  };
+
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.title}>Expense Tracker</h1>
+      <p className={styles.balance}>Balance: ${balance.toFixed(2)}</p>
+
+      <div className={styles.addTransaction}>
+        <input
+          type="text"
+          placeholder="Merchant"
+          value={merchant}
+          onChange={(e) => setMerchant(e.target.value)}
+          className={styles.input}
+        />
+        <input
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className={styles.input}
+        />
+        <button onClick={handleAddTransaction} className={styles.button}>
+          Add Transaction
+        </button>
+      </div>
+
+      <ul className={styles.transactionList}>
+        {transactions.map((t, index) => (
+          <li key={index} className={styles.transactionItem}>
+            <span>
+              {t.merchant}: ${t.amount.toFixed(2)}
+            </span>
+            <button
+              onClick={() => handleDeleteTransaction(index)}
+              className={styles.deleteButton}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
