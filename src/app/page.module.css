@@ -1,60 +1,92 @@
-/* src/app/page.module.css */
 .container {
-  max-width: 600px;
-  margin: 40px auto;
+  font-family: "Inter", sans-serif;
+  background: #f5f1e8;
+  color: #4a3629;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
-  background: #f4f4f4;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.heading {
-  text-align: center;
-  color: #333;
-}
-
-.balance {
-  font-size: 24px;
+.title {
+  font-size: 2.5rem;
   font-weight: bold;
-  text-align: center;
   margin-bottom: 10px;
 }
 
-.transactionList {
-  list-style: none;
-  padding: 0;
-}
-
-.transactionItem {
-  background: white;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
+.balance {
+  font-size: 1.8rem;
+  font-weight: bold;
+  background: #fff;
+  padding: 15px 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .addTransaction {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 320px;
 }
 
-.inputField {
-  padding: 8px;
+.input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #d3c1a5;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
 .button {
-  padding: 10px;
-  background: #0070f3;
+  background: #e6a96c;
   color: white;
+  font-size: 1rem;
+  padding: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .button:hover {
-  background: #005bb5;
+  background: #d18952;
+}
+
+.transactionList {
+  list-style: none;
+  padding: 0;
+  width: 320px;
+  margin-top: 20px;
+}
+
+.transactionItem {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.deleteButton {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.deleteButton:hover {
+  background: #d64545;
 }
