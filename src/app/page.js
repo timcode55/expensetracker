@@ -12,13 +12,18 @@ export default function Home() {
 
   useEffect(() => {
     const savedData = localStorage.getItem("expenseTrackerData");
+    const currentDate = new Date().toDateString();
+
     if (savedData) {
       const { savedBalance, savedTransactions, savedDate } =
         JSON.parse(savedData);
-      const currentDate = new Date().toDateString();
       if (savedDate === currentDate) {
         setBalance(savedBalance);
         setTransactions(savedTransactions);
+      } else {
+        // Reset at midnight
+        setBalance(initialBudget);
+        setTransactions([]);
       }
     }
   }, []);
