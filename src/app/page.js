@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -9,6 +9,8 @@ export default function Home() {
   const [transactions, setTransactions] = useState([]);
   const [merchant, setMerchant] = useState("");
   const [amount, setAmount] = useState("");
+
+  const merchantInputRef = useRef(null);
 
   useEffect(() => {
     const savedData = localStorage.getItem("expenseTrackerData");
@@ -47,6 +49,7 @@ export default function Home() {
     setBalance(balance - newTransaction.amount);
     setMerchant("");
     setAmount("");
+    merchantInputRef.current?.focus();
   };
 
   const handleKeyDown = (e) => {
@@ -75,6 +78,7 @@ export default function Home() {
           value={merchant}
           onChange={(e) => setMerchant(e.target.value)}
           className={styles.input}
+          ref={merchantInputRef}
         />
         <input
           type="number"
