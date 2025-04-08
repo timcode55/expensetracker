@@ -13,6 +13,10 @@ export default function Home() {
   const merchantInputRef = useRef(null);
 
   useEffect(() => {
+    document.title = "Meal Expense Daily Tracker";
+  }, []);
+
+  useEffect(() => {
     const savedData = localStorage.getItem("expenseTrackerData");
     const currentDate = new Date().toDateString();
 
