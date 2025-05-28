@@ -27,7 +27,6 @@ export default function Home() {
         setBalance(savedBalance);
         setTransactions(savedTransactions);
       } else {
-        // Reset at midnight
         setBalance(initialBudget);
         setTransactions([]);
       }
@@ -69,6 +68,30 @@ export default function Home() {
     setTransactions(updatedTransactions);
     setBalance(updatedBalance);
   };
+
+  const formatEmailBody = () => {
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const formattedTransactions = transactions
+      .map((t) => `${t.merchant.padEnd(16)} $${t.amount.toFixed(2)}`)
+      .join("%0D%0A");
+
+    return (
+      `📅 Daily Expense Summary%0D%0A` +
+      `Date: ${currentDate}%0D%0A%0D%0A` +
+      `Merchant         Amount%0D%0A` +
+      `------------------------%0D%0A` +
+      `${formattedTransactions}%0D%0A%0D%0A` +
+      `Remaining Balance: $${balance.toFixed(2)}`
+    );
+  };
+
+  const emailLink = `mailto:?subject=Meal Expense Report&body=${formatEmailBody()}`;
 
   return (
     <div className={styles.container}>
@@ -112,6 +135,12 @@ export default function Home() {
           </li>
         ))}
       </ul>
+
+      {transactions.length > 0 && (
+        <a href={emailLink} className={styles.emailButton}>
+          Email Today's Expenses
+        </a>
+      )}
     </div>
   );
 }

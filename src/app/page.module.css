@@ -90,3 +90,22 @@
 .deleteButton:hover {
   background: #d64545;
 }
+
+.emailButton {
+  margin-top: 16px;
+  display: inline-block;
+  text-align: center;
+  padding: 10px 16px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.emailButton:hover {
+  background-color: #059669;
+}
