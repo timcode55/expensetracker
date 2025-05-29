@@ -103,7 +103,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Expense Tracker</h1>
+      <h1 className={styles.title}>Meal Expense Tracker</h1>
       <p className={styles.balance}>Balance: ${balance.toFixed(2)}</p>
 
       <div className={styles.addTransaction}>
