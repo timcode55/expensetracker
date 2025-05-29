@@ -91,7 +91,15 @@ export default function Home() {
     );
   };
 
-  const emailLink = `mailto:?subject=Meal Expense Report&body=${formatEmailBody()}`;
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const emailSubject = `Meal Expense Report - ${currentDate}`;
+  const emailLink = `mailto:?subject=${encodeURIComponent(
+    emailSubject
+  )}&body=${formatEmailBody()}`;
 
   return (
     <div className={styles.container}>
