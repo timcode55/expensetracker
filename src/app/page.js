@@ -138,7 +138,7 @@ export default function Home() {
 
       {transactions.length > 0 && (
         <a href={emailLink} className={styles.emailButton}>
-          Email Today's Expenses
+          {"Email Today's Expenses"}
         </a>
       )}
     </div>
