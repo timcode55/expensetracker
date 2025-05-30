@@ -16,6 +16,12 @@
   margin-bottom: 10px;
 }
 
+@media (max-width: 600px) {
+  .title {
+    font-size: 1.8rem;
+  }
+}
+
 .balance {
   font-size: 1.8rem;
   font-weight: bold;
