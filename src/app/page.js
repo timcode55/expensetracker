@@ -9,6 +9,9 @@ export default function Home() {
   const [transactions, setTransactions] = useState([]);
   const [merchant, setMerchant] = useState("");
   const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const [merchantSuggestions, setMerchantSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const merchantInputRef = useRef(null);
 
@@ -47,16 +50,45 @@ export default function Home() {
 
   const handleAddTransaction = () => {
     if (!merchant || !amount || isNaN(amount) || amount <= 0) return;
-    const newTransaction = { merchant, amount: parseFloat(amount) };
+    const newTransaction = {
+      merchant,
+      amount: parseFloat(amount),
+      note: note.trim()
+    };
     setTransactions([...transactions, newTransaction]);
     setBalance(balance - newTransaction.amount);
     setMerchant("");
     setAmount("");
+    setNote("");
+    setShowSuggestions(false);
+    merchantInputRef.current?.focus();
+  };
+
+  const handleMerchantChange = (value) => {
+    setMerchant(value);
+
+    if (value.trim().length > 0) {
+      // Get unique merchants from transaction history
+      const uniqueMerchants = [...new Set(transactions.map(t => t.merchant))];
+      const filtered = uniqueMerchants.filter(m =>
+        m.toLowerCase().includes(value.toLowerCase())
+      );
+      setMerchantSuggestions(filtered);
+      setShowSuggestions(filtered.length > 0);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setMerchant(suggestion);
+    setShowSuggestions(false);
     merchantInputRef.current?.focus();
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleAddTransaction();
+    if (e.key === "Escape") setShowSuggestions(false);
   };
 
   const handleDeleteTransaction = (index) => {
@@ -78,16 +110,27 @@ export default function Home() {
     });
 
     const formattedTransactions = transactions
-      .map((t) => `${t.merchant.padEnd(16)} $${t.amount.toFixed(2)}`)
-      .join("%0D%0A");
+      .map((t) => {
+        let line = `${t.merchant.padEnd(20)} $${t.amount.toFixed(2)}`;
+        if (t.note) {
+          line += `%0D%0A   📝 ${t.note}`;
+        }
+        return line;
+      })
+      .join("%0D%0A%0D%0A");
+
+    const total = transactions.reduce((sum, t) => sum + t.amount, 0);
 
     return (
-      `📅 Daily Expense Summary%0D%0A` +
+      `📅 DAILY EXPENSE SUMMARY%0D%0A` +
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0D%0A` +
       `Date: ${currentDate}%0D%0A%0D%0A` +
-      `Merchant         Amount%0D%0A` +
-      `------------------------%0D%0A` +
+      `TRANSACTIONS:%0D%0A` +
       `${formattedTransactions}%0D%0A%0D%0A` +
-      `Remaining Balance: $${balance.toFixed(2)}`
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0D%0A` +
+      `Total Spent:          $${total.toFixed(2)}%0D%0A` +
+      `Remaining Balance:    $${balance.toFixed(2)}%0D%0A` +
+      `Starting Budget:      $${initialBudget.toFixed(2)}`
     );
   };
 
@@ -107,19 +150,42 @@ export default function Home() {
       <p className={styles.balance}>Balance: ${balance.toFixed(2)}</p>
 
       <div className={styles.addTransaction}>
-        <input
-          type="text"
-          placeholder="Merchant"
-          value={merchant}
-          onChange={(e) => setMerchant(e.target.value)}
-          className={styles.input}
-          ref={merchantInputRef}
-        />
+        <div className={styles.autocompleteWrapper}>
+          <input
+            type="text"
+            placeholder="Merchant"
+            value={merchant}
+            onChange={(e) => handleMerchantChange(e.target.value)}
+            className={styles.input}
+            ref={merchantInputRef}
+          />
+          {showSuggestions && merchantSuggestions.length > 0 && (
+            <ul className={styles.suggestionsList}>
+              {merchantSuggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className={styles.suggestionItem}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <input
           type="number"
           placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className={styles.input}
+        />
+        <input
+          type="text"
+          placeholder="Note (optional)"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
           onKeyDown={handleKeyDown}
           className={styles.input}
         />
@@ -131,9 +197,14 @@ export default function Home() {
       <ul className={styles.transactionList}>
         {transactions.map((t, index) => (
           <li key={index} className={styles.transactionItem}>
-            <span>
-              {t.merchant}: ${t.amount.toFixed(2)}
-            </span>
+            <div className={styles.transactionContent}>
+              <span>
+                {t.merchant}: ${t.amount.toFixed(2)}
+              </span>
+              {t.note && (
+                <div className={styles.transactionNote}>{t.note}</div>
+              )}
+            </div>
             <button
               onClick={() => handleDeleteTransaction(index)}
               className={styles.deleteButton}

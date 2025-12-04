@@ -42,6 +42,11 @@
   width: 320px;
 }
 
+.autocompleteWrapper {
+  position: relative;
+  width: 100%;
+}
+
 .input {
   width: 100%;
   padding: 10px;
@@ -81,6 +86,23 @@
   border-radius: 5px;
   margin-bottom: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 60px;
+}
+
+.transactionContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.transactionNote {
+  font-size: 0.85rem;
+  color: #8b7355;
+  font-style: italic;
+  padding-left: 4px;
+  border-left: 2px solid #e6a96c;
+  margin-top: 2px;
 }
 
 .deleteButton {
@@ -114,4 +136,33 @@
 
 .emailButton:hover {
   background-color: #059669;
+}
+
+.suggestionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #d3c1a5;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.suggestionItem {
+  padding: 10px;
+  cursor: pointer;
+  color: #4a3629;
+  transition: background 0.2s ease;
+}
+
+.suggestionItem:hover {
+  background: #f5f1e8;
 }
