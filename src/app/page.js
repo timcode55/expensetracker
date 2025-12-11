@@ -53,7 +53,8 @@ export default function Home() {
     const newTransaction = {
       merchant,
       amount: parseFloat(amount),
-      note: note.trim()
+      note: note.trim(),
+      timestamp: new Date().toISOString()
     };
     setTransactions([...transactions, newTransaction]);
     setBalance(balance - newTransaction.amount);
@@ -101,6 +102,28 @@ export default function Home() {
     setBalance(updatedBalance);
   };
 
+  const getTimeOfDayEmoji = (timestamp) => {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+
+    if (hours >= 6 && hours < 11) {
+      return "🌅"; // Breakfast time
+    } else if (hours >= 11 && hours <= 16) {
+      return "☀️"; // Lunch time
+    } else {
+      return "🌙"; // Dinner/Evening time
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
+  };
+
   const formatEmailBody = () => {
     const currentDate = new Date().toLocaleDateString("en-US", {
       weekday: "long",
@@ -111,9 +134,11 @@ export default function Home() {
 
     const formattedTransactions = transactions
       .map((t) => {
-        let line = `${t.merchant.padEnd(20)} $${t.amount.toFixed(2)}`;
+        const timeEmoji = t.timestamp ? getTimeOfDayEmoji(t.timestamp) : "⏰";
+        const timeStr = t.timestamp ? formatTime(t.timestamp) : "";
+        let line = `${timeEmoji} ${timeStr}%0D%0A${t.merchant.padEnd(20)} $${t.amount.toFixed(2)}`;
         if (t.note) {
-          line += `%0D%0A   📝 ${t.note}`;
+          line += `%0D%0A   Note: ${t.note}`;
         }
         return line;
       })
@@ -122,12 +147,12 @@ export default function Home() {
     const total = transactions.reduce((sum, t) => sum + t.amount, 0);
 
     return (
-      `📅 DAILY EXPENSE SUMMARY%0D%0A` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0D%0A` +
+      `DAILY EXPENSE SUMMARY%0D%0A` +
+      `========================================%0D%0A` +
       `Date: ${currentDate}%0D%0A%0D%0A` +
       `TRANSACTIONS:%0D%0A` +
       `${formattedTransactions}%0D%0A%0D%0A` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0D%0A` +
+      `========================================%0D%0A` +
       `Total Spent:          $${total.toFixed(2)}%0D%0A` +
       `Remaining Balance:    $${balance.toFixed(2)}%0D%0A` +
       `Starting Budget:      $${initialBudget.toFixed(2)}`
