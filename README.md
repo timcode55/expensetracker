@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Meal Expense Tracker
 
-## Getting Started
+A simple daily meal expense tracker. Each day starts with a $100 budget; log what you spend and email yourself a summary of the day.
 
-First, run the development server:
+## Features
+
+- **Daily $100 budget** – the balance resets automatically each new day.
+- **Quick entry** – one-tap buttons for frequent stores (Whole Foods, ShopRite, Weis, Dunkin'), and merchant autocomplete that puts names starting with what you type and your most-used places first. Press Enter or Tab to accept a suggestion.
+- **Edit or delete entries** – change the merchant, amount, note or time. The time sets the meal emoji (🌅 breakfast, ☀️ lunch, 🌙 evening).
+- **Email the day's report** – opens your mail app with a summary of every entry, the total spent and the remaining balance.
+- **Past days** – use the ‹ › arrows to go back and email a report you forgot to send. The last 30 days are kept.
+
+## Where data is stored
+
+There is no server or database. Entries are saved in the browser's `localStorage`, so:
+
+- Each device and browser has its own separate data. Anyone else using the link has their own private history.
+- Clearing browser data erases the history.
+- On iPhone, adding the app to the Home Screen (Share → Add to Home Screen) keeps Safari from clearing it after a week of no visits.
+
+## Development
+
+Built with [Next.js](https://nextjs.org) 15 and React 19. All of the app's logic is in `src/app/page.js`.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app icons are generated from code in `src/app/iconArt.js` (`icon.js` for the browser tab, `apple-icon.js` for the iPhone home screen).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+> **Note:** `npm run build` fails locally if the project folder path contains an apostrophe (e.g. `Tim's Coding Projects`) because of a Next.js bug. `npm run dev` and Vercel deployments are unaffected.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Hosted on Vercel. Pushing to `main` deploys automatically.

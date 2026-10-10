@@ -22,6 +22,10 @@ const fromDateKey = (key) => {
   return new Date(y, m - 1, d);
 };
 
+// "HH:MM" for <input type="time">
+const toTimeInput = (date) =>
+  `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+
 const loadHistory = () => {
   let history = {};
   try {
@@ -59,14 +63,10 @@ export default function Home() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [editingId, setEditingId] = useState(null);
-  const [editDraft, setEditDraft] = useState({ merchant: "", amount: "", note: "" });
+  const [editDraft, setEditDraft] = useState({ merchant: "", amount: "", note: "", time: "" });
 
   const merchantInputRef = useRef(null);
   const amountInputRef = useRef(null);
-
-  useEffect(() => {
-    document.title = "Meal Expense Daily Tracker";
-  }, []);
 
   useEffect(() => {
     const todayKey = toDateKey(new Date());
@@ -233,18 +233,32 @@ export default function Home() {
 
   const startEditing = (t) => {
     setEditingId(t.id);
-    setEditDraft({ merchant: t.merchant, amount: String(t.amount), note: t.note || "" });
+    setEditDraft({
+      merchant: t.merchant,
+      amount: String(t.amount),
+      note: t.note || "",
+      time: t.timestamp ? toTimeInput(new Date(t.timestamp)) : "",
+    });
   };
 
   const saveEdit = () => {
-    const { merchant: m, amount: a, note: n } = editDraft;
+    const { merchant: m, amount: a, note: n, time } = editDraft;
     if (!m.trim() || !a || isNaN(a) || a <= 0) return;
     updateDay(selectedDate, (list) =>
-      list.map((t) =>
-        t.id === editingId
-          ? { ...t, merchant: m.trim(), amount: parseFloat(a), note: n.trim() }
-          : t
-      )
+      list
+        .map((t) => {
+          if (t.id !== editingId) return t;
+          const updated = { ...t, merchant: m.trim(), amount: parseFloat(a), note: n.trim() };
+          if (time) {
+            const date = t.timestamp ? new Date(t.timestamp) : fromDateKey(selectedDate);
+            const [hours, minutes] = time.split(":").map(Number);
+            date.setHours(hours, minutes, 0, 0);
+            updated.timestamp = date.toISOString();
+          }
+          return updated;
+        })
+        // Keep the day in time order after a time change
+        .sort((x, y) => (x.timestamp || "").localeCompare(y.timestamp || ""))
     );
     setEditingId(null);
   };
@@ -254,10 +268,9 @@ export default function Home() {
     if (e.key === "Escape") setEditingId(null);
   };
 
-  const getTimeOfDayEmoji = (timestamp) => {
-    const date = new Date(timestamp);
-    const hours = date.getHours();
+  const getTimeOfDayEmoji = (timestamp) => getMealEmoji(new Date(timestamp).getHours());
 
+  const getMealEmoji = (hours) => {
     if (hours >= 6 && hours < 11) {
       return "🌅"; // Breakfast time
     } else if (hours >= 11 && hours <= 16) {
@@ -462,6 +475,16 @@ export default function Home() {
                 className={styles.input}
                 placeholder="Note (optional)"
               />
+              <label className={styles.timeLabel}>
+                Time {editDraft.time && getMealEmoji(parseInt(editDraft.time, 10))}
+                <input
+                  type="time"
+                  value={editDraft.time}
+                  onChange={(e) => setEditDraft({ ...editDraft, time: e.target.value })}
+                  onKeyDown={handleEditKeyDown}
+                  className={styles.input}
+                />
+              </label>
               <div className={styles.editActions}>
                 <button onClick={saveEdit} className={styles.saveButton}>
                   Save
@@ -474,6 +497,11 @@ export default function Home() {
           ) : (
             <li key={t.id} className={styles.transactionItem}>
               <div className={styles.transactionContent}>
+                {t.timestamp && (
+                  <span className={styles.transactionTime}>
+                    {getTimeOfDayEmoji(t.timestamp)} {formatTime(t.timestamp)}
+                  </span>
+                )}
                 <span>
                   {t.merchant}: ${t.amount.toFixed(2)}
                 </span>

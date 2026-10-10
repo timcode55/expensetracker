@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Daily Meal Expense Tracker",
+  title: "Meal Expense Tracker",
   description: "Track your daily meal expenses easily.",
 };
 

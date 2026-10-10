@@ -300,3 +300,16 @@
   color: #4a3629;
   border: 1px solid #d3c1a5;
 }
+
+.transactionTime {
+  font-size: 0.8rem;
+  color: #8b7355;
+}
+
+.timeLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #8b7355;
+}
