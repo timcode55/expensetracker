@@ -163,6 +163,140 @@
   transition: background 0.2s ease;
 }
 
-.suggestionItem:hover {
+.suggestionItem:hover,
+.suggestionItemActive {
   background: #f5f1e8;
+}
+
+.dayNav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.dayLabel {
+  font-size: 1.1rem;
+  font-weight: bold;
+  min-width: 170px;
+  text-align: center;
+}
+
+.dayNavButton {
+  background: #fff;
+  color: #4a3629;
+  border: 1px solid #d3c1a5;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dayNavButton:hover:not(:disabled) {
+  background: #f0e4d0;
+}
+
+.dayNavButton:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.backToToday {
+  background: none;
+  border: none;
+  color: #d18952;
+  text-decoration: underline;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.quickMerchants {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.quickMerchant {
+  background: #f5f1e8;
+  color: #4a3629;
+  border: 1px solid #d3c1a5;
+  border-radius: 20px;
+  padding: 8px 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.quickMerchant:hover {
+  background: #f0e4d0;
+}
+
+.quickMerchantActive {
+  background: #e6a96c;
+  border-color: #e6a96c;
+  color: white;
+}
+
+.quickMerchantActive:hover {
+  background: #d18952;
+}
+
+.itemActions {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.editButton {
+  background: #e6a96c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.editButton:hover {
+  background: #d18952;
+}
+
+.transactionItem.editing {
+  flex-direction: column;
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+}
+
+.saveButton,
+.cancelButton {
+  flex: 1;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.saveButton {
+  background: #10b981;
+  color: white;
+}
+
+.saveButton:hover {
+  background: #059669;
+}
+
+.cancelButton {
+  background: #f5f1e8;
+  color: #4a3629;
+  border: 1px solid #d3c1a5;
 }
